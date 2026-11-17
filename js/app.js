@@ -31,6 +31,8 @@ const orderBtn = document.getElementById("orderBtn");
 const notice = document.getElementById("notice");
 const nameInput = document.getElementById("customerName");
 const noteInput = document.getElementById("note");
+const previewBtn = document.getElementById("previewBtn");
+const previewBox = document.getElementById("previewBox");
 
 tableBadge.textContent = TABLE ? "TABLE " + TABLE.toUpperCase() : "TABLE NOT SET";
 document.title = RESTAURANT_NAME + (TABLE ? " - Table " + TABLE : "");
@@ -54,6 +56,10 @@ function saveCart() {
 
 function formatPrice(value) {
   return CURRENCY + value.toFixed(2);
+}
+
+function getItemCount() {
+  return Object.values(cart).reduce((a, b) => a + b, 0);
 }
 
 function buildMenu() {
@@ -116,7 +122,13 @@ function changeQty(id, delta) {
     cart[id] = Math.min(next, 20);
   }
   saveCart();
+  hidePreview();
   updateView();
+}
+
+function hidePreview() {
+  previewBox.hidden = true;
+  previewBox.textContent = "";
 }
 
 function updateView() {
@@ -208,6 +220,19 @@ function updateOrderButton(itemCount) {
   notice.textContent = "Tap to send your order on WhatsApp.";
 }
 
+// Demo: shows the exact WhatsApp message on screen without sending it
+previewBtn.addEventListener("click", () => {
+  if (getItemCount() === 0) {
+    hidePreview();
+    notice.textContent = "Add at least one item to preview your order.";
+    return;
+  }
+
+  previewBox.textContent = buildOrderMessage();
+  previewBox.hidden = false;
+  notice.textContent = "This is how your order will look on WhatsApp.";
+});
+
 // Subtle scroll reveal. CSS turns off the animation for reduced motion.
 function revealOnScroll() {
   const items = document.querySelectorAll(".item");
@@ -229,9 +254,15 @@ function revealOnScroll() {
   items.forEach((el) => observer.observe(el));
 }
 
-// Name and note changes just refresh the order link and summary
-nameInput.addEventListener("input", updateView);
-noteInput.addEventListener("input", updateView);
+// Name and note changes refresh the order link and summary
+nameInput.addEventListener("input", () => {
+  hidePreview();
+  updateView();
+});
+noteInput.addEventListener("input", () => {
+  hidePreview();
+  updateView();
+});
 
 buildMenu();
 updateView();

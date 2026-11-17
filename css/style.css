@@ -208,6 +208,23 @@ body {
   pointer-events: none;
 }
 
+.preview-btn {
+  background: var(--teal);
+  margin-top: 14px;
+}
+.preview-btn:hover { background: #164f4c; }
+
+.preview {
+  margin: 14px 20px 0;
+  padding: 14px;
+  background: #fffdf5;
+  border: 2px dashed var(--ink);
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .notice {
   margin: 16px 20px 0;
   font-size: 0.85rem;
